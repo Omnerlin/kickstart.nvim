@@ -81,7 +81,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- Build Script
 vim.keymap.set('n', '<leader>b', ':!cmake --build build -j12<CR>', { desc = 'Run Build script', noremap = true, silent = true })
 vim.keymap.set('n', '<leader>cm', ':!pushd build && cmake .. & popd<CR>', { desc = 'Run Build script', noremap = true, silent = true })
-vim.keymap.set('n', '<leader>cd', ':!start raddbg bin\\HotReload.exe<CR>', { desc = 'Run Debugger', noremap = true, silent = true })
+vim.keymap.set('n', '<leader>cd', ':!start raddbg bin\\out.exe<CR>', { desc = 'Run Debugger', noremap = true, silent = true })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
