@@ -1,3 +1,7 @@
+if vim.g.neovide then
+  vim.o.guifont = 'Fira Code:h10' -- text below applies for VimScript
+  vim.g.neovide_fullscreen = true
+end
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
