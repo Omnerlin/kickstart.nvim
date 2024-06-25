@@ -29,14 +29,22 @@ set(EXE_NAME out)
 add_executable(${EXE_NAME} src/main.cpp)
 set(BUILD_TARGETS ${EXE_NAME})
 if(MSVC)
+  #Debug
   set_target_properties(${BUILD_TARGETS} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/../lib)
   set_target_properties(${BUILD_TARGETS} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/../bin)
   set_target_properties(${BUILD_TARGETS} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/../lib)
   set_target_properties(${BUILD_TARGETS} PROPERTIES PDB_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/../bin/pdb)
+
+  #Release
+  set_target_properties(${BUILD_TARGETS} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/../lib)
+  set_target_properties(${BUILD_TARGETS} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/../bin)
+  set_target_properties(${BUILD_TARGETS} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/../lib)
+  set_target_properties(${BUILD_TARGETS} PROPERTIES PDB_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/../bin/pdb)
 endif(MSVC)
     ]]
   )
 
+  -- Clang Format
   createFileIfDoesntExist(
     '.clang-format',
     [[
@@ -59,6 +67,7 @@ BraceWrapping:
   ]]
   )
 
+  -- Compile flags (hints for LSP)
   createFileIfDoesntExist(
     '.compile_flags.txt',
     [[
@@ -67,6 +76,9 @@ BraceWrapping:
 -Iinclude
   ]]
   )
+
+  -- Main.cpp
+  createFileIfDoesntExist('src/main.cpp', '')
 
   print 'Done.'
 end
