@@ -1,5 +1,5 @@
 if vim.g.neovide then
-  vim.o.guifont = 'Fira Code:h10' -- text below applies for VimScript
+  vim.o.guifont = 'Fira Code:h8' -- text below applies for VimScript
   vim.g.neovide_fullscreen = true
   vim.g.neovide_scroll_animation_length = 0.15
 end
@@ -124,6 +124,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+require 'custom.plugins.project_scaffold'
+vim.api.nvim_create_user_command('ScaffoldProject', require('custom.plugins.project_scaffold').init_project, {})
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
