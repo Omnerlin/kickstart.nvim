@@ -1,6 +1,7 @@
 if vim.g.neovide then
   vim.o.guifont = 'Fira Code:h10' -- text below applies for VimScript
   vim.g.neovide_fullscreen = true
+  vim.g.neovide_scroll_animation_length = 0.15
 end
 -- Set <space> as the leader key
 -- See `:help mapleader`
