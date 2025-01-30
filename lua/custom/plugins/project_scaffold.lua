@@ -69,7 +69,7 @@ BraceWrapping:
 
   -- Compile flags (hints for LSP)
   createFileIfDoesntExist(
-    '.compile_flags.txt',
+    'compile_flags.txt',
     [[
 -std=c++20
 -Isrc
