@@ -4,6 +4,8 @@ if vim.g.neovide then
   vim.g.neovide_scroll_animation_length = 0.15
 end
 
+vim.opt.termguicolors = true
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -12,6 +14,8 @@ vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = false
+vim.o.guifont = 'Inconsolata'   -- text below applies for VimScript
+
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -90,8 +94,12 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagn
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Build Script
-vim.keymap.set('n', '<leader>b', ':!cmake --build build -j12<CR>', { desc = 'Run Build script', noremap = true, silent = true })
-vim.keymap.set('n', '<leader>cm', ':!cmake -S . -B build<CR>', { desc = 'Run Build script', noremap = true, silent = true })
+vim.keymap.set('n', '<leader>b', ':!cmake --build build -j12<CR>',
+  { desc = 'Run Build script', noremap = true, silent = true })
+vim.keymap.set('n', '<leader>B', ':!cmake --build build --config Release -j12<CR>',
+  { desc = 'Run Build script', noremap = true, silent = true })
+vim.keymap.set('n', '<leader>cm', ':!cmake -S . -B build<CR>',
+  { desc = 'Run Build script', noremap = true, silent = true })
 vim.keymap.set('n', '<leader>cd', ':!start raddbg bin\\out<CR>', { desc = 'Run Debugger', noremap = true, silent = true })
 vim.keymap.set('n', '<leader>c0', ':!./bin/out<CR>', { desc = 'Run Debugger', noremap = true, silent = true })
 
@@ -150,8 +158,8 @@ vim.opt.rtp:prepend(lazypath)
 --    :Lazy update
 
 -- Set the default tab size and related settings
-vim.opt.tabstop = 2 -- Number of spaces a <Tab> counts for
-vim.opt.shiftwidth = 2 -- Number of spaces to use for each step of (auto)indent
+vim.opt.tabstop = 2      -- Number of spaces a <Tab> counts for
+vim.opt.shiftwidth = 2   -- Number of spaces to use for each step of (auto)indent
 vim.opt.expandtab = true -- Use spaces instead of tabs
 
 -- Add a mapping for making it easy to edit our config
@@ -180,7 +188,8 @@ require('lazy').setup({
 
   {
     'nvim-telescope/telescope-fzf-native.nvim',
-    build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
+    build =
+    'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
     config = function()
       require('telescope').setup {
         extensions = {
@@ -244,7 +253,7 @@ require('lazy').setup({
   },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',    opts = {} },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -261,7 +270,7 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  { -- Useful plugin to show you pending keybinds.
+  {                     -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
@@ -306,7 +315,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -399,11 +408,11 @@ require('lazy').setup({
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      { 'folke/neodev.nvim', opts = {} },
+      { 'folke/neodev.nvim',       opts = {} },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -598,95 +607,129 @@ require('lazy').setup({
     end,
   },
 
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    lazy = false,
-    keys = {
-      {
-        '<leader>f',
-        function()
-          require('conform').format { async = true, lsp_fallback = true }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
-      },
-    },
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        return {
-          timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-        }
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        cpp = { 'clang-format' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
-      },
-    },
+  {
+    "rktjmp/lush.nvim"
   },
 
+  -- { -- Autoformat
+  --   'stevearc/conform.nvim',
+  --   lazy = false,
+  --   keys = {
+  --     {
+  --       '<leader>f',
+  --       function()
+  --         require('conform').format { async = true, lsp_fallback = true }
+  --       end,
+  --       mode = '',
+  --       desc = '[F]ormat buffer',
+  --     },
+  --   },
+  --   opts = {
+  --     notify_on_error = false,
+  --     format_on_save = function(bufnr)
+  --       -- Disable "format_on_save lsp_fallback" for languages that don't
+  --       -- have a well standardized coding style. You can add additional
+  --       -- languages here or re-enable it for the disabled ones.
+  --       local disable_filetypes = { c = true, cpp = true }
+  --       return {
+  --         timeout_ms = 500,
+  --         lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+  --       }
+  --     end,
+  --     formatters_by_ft = {
+  --       lua = { 'stylua' },
+  --       cpp = { 'clang-format' },
+  --       -- Conform can also run multiple formatters sequentially
+  --       -- python = { "isort", "black" },
+  --       --
+  --       -- You can use a sub-list to tell conform to run *until* a formatter
+  --       -- is found.
+  --       -- javascript = { { "prettierd", "prettier" } },
+  --     },
+  --   },
+  -- },
+
   { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
+
+    ------------------------ LACKLUSTER
+  --   'slugbyte/lackluster.nvim',
+  --   lazy = false, -- make sure we load this during startup if it is your main colorscheme
+  --   priority = 1000, -- make sure to load this before all the other start plugins
+  --   config = function()
+  --     local lackluster = require 'lackluster'
+  --     local color = lackluster.color
+  --     local general_color = color.luster
+  --
+  --     lackluster.setup {
+  --       -- Tweak syntax coloring
+  --       tweak_syntax = {
+  --         string = general_color,
+  --         string_escape = general_color,
+  --         comment = color.gray5,
+  --         type = color.green,
+  --         builtin = general_color,
+  --         keyword = general_color,
+  --         keyword_return = general_color,
+  --         keyword_exception = general_color,
+  --       },
+  --
+  --       -- Update background color
+  --       tweak_background = {
+  --         normal = 'none',
+  --       },
+  --
+  --       disable_plugin = {},
+  --     }
+  --   vim.cmd.colorscheme 'lackluster'
+  -- end
+
+    ------------------------ NIGHTFOX
+    -- 'edeneast/nightfox.nvim',
     --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
-    'slugbyte/lackluster.nvim',
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
+    -- config = function()
+    --   require("nightfox").setup({
+    --     palettes = {
+    --       carbonfox = {
+    --
+    --       }
+    --     }
+    --   })
+    --   vim.cmd.colorscheme 'carbonfox'
+    -- end
+
+    ------------------------ GRUVBOX
+    'sainnhe/gruvbox-material',
     config = function()
-      local lackluster = require 'lackluster'
-      local color = lackluster.color
-      local general_color = color.luster
+      vim.g.gruvbox_material_background = 'hard'
+      vim.g.gruvbox_material_better_performance = 1
+      vim.cmd [[
+        " let g:gruvbox_material_colors_override = {'blue': ['#d4be98', '223'], 'green': ['#d4be98', '223'], 'red': ['#d8a657', '223'], 'purple': ['#a9b665', '223'], 'orange': ['#d8a657', '223'] }
+        let g:gruvbox_material_colors_override = {'blue': ['#d4be98', '223'], 'red': ['#d8a657', '223'], 'orange': ['#d8a657', '223'] }
+      ]]
+      vim.cmd.colorscheme 'gruvbox-material'
+    end
 
-      lackluster.setup {
-        -- Tweak syntax coloring
-        tweak_syntax = {
-          string = general_color,
-          string_escape = general_color,
-          comment = color.gray5,
-          type = color.green,
-          builtin = general_color,
-          keyword = general_color,
-          keyword_return = general_color,
-          keyword_exception = general_color,
-        },
+    ------------------------ EVERFOREST
+    -- 'sainnhe/everforest',
+    -- config = function()
+    --   vim.g.everforest_background = 'hard'
+    --   vim.cmd.colorscheme 'everforest'
+    -- end
 
-        -- Update background color
-        tweak_background = {
-          normal = 'none',
-        },
+    -- 'morhetz/gruvbox',
+    --  config = function()
+    --    -- vim.g.everforest_background = 'hard'
+    --    vim.cmd.colorscheme 'gruvbox'
+    --  end
 
-        disable_plugin = {},
-      }
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      --
-      -- vim.cmd [[
-      --   let g:accent_no_bg = 1
-      --   let g:accent_invert_status = 1
-      -- ]]
-      vim.cmd.colorscheme 'lackluster'
 
-      -- You can configure highlights by doing something like
-      -- vim.cmd.hi 'Comment gui=none'
-    end,
+    -- You can configure highlights by doing something like
+    -- vim.cmd.hi 'Comment gui=none'
+    -- end,
   },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
